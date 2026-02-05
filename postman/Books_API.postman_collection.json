@@ -1,0 +1,210 @@
+{
+  "info": {
+    "name": "Books API (Catálogo)",
+    "description": "Colección CRUD y búsqueda para el microservicio de libros (books-ms / search)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "gatewayUrl",
+      "value": "http://localhost:8762/search"
+    }
+  ],
+  "item": [
+    {
+      "name": "Libros - CRUD",
+      "item": [
+        {
+          "name": "Listar todos los libros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books",
+            "description": "Devuelve todos los libros visibles (isVisible=true). Esperado: 200 y array de libros."
+          }
+        },
+        {
+          "name": "Obtener libro por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/1",
+            "description": "Devuelve el libro con id 1. Esperado: 200. Si no existe: 404."
+          }
+        },
+        {
+          "name": "Crear libro",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"author\": \"Gabriel García Márquez\",\n  \"publicationDate\": \"1967-05-30\",\n  \"category\": \"Realismo Mágico\",\n  \"isbn\": 9780307474728,\n  \"valoration\": 5,\n  \"isVisible\": true,\n  \"currentStock\": 10\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/books",
+            "description": "Crea un libro. Todos los campos son obligatorios. Esperado: 201 y body con el libro creado (incluye id)."
+          }
+        },
+        {
+          "name": "Actualizar libro",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"author\": \"Gabriel García Márquez\",\n  \"publicationDate\": \"1967-05-30\",\n  \"category\": \"Realismo Mágico\",\n  \"isbn\": 9780307474728,\n  \"valoration\": 5,\n  \"isVisible\": true,\n  \"currentStock\": 8\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/books/1",
+            "description": "Actualiza el libro con id 1 (ejemplo: reducir currentStock). Esperado: 200."
+          }
+        },
+        {
+          "name": "Eliminar libro",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/1",
+            "description": "Elimina el libro con id 1. Esperado: 204 No Content. Si no existe: 404."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Libros - Validación (errores)",
+      "item": [
+        {
+          "name": "Crear libro - validación (campos vacíos)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"publicationDate\": \"2020-01-01\",\n  \"category\": \"\",\n  \"isbn\": 123,\n  \"valoration\": 3,\n  \"isVisible\": true,\n  \"currentStock\": 0\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/books",
+            "description": "Debe devolver 400: errores de validación (título, autor, categoría obligatorios)."
+          }
+        },
+        {
+          "name": "Crear libro - validación (stock negativo)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Libro Test\",\n  \"author\": \"Autor\",\n  \"publicationDate\": \"2020-01-01\",\n  \"category\": \"Ficción\",\n  \"isbn\": 1234567890,\n  \"valoration\": 3,\n  \"isVisible\": true,\n  \"currentStock\": -1\n}"
+            },
+            "url": "{{baseUrl}}/api/v1/books",
+            "description": "Debe devolver 400: currentStock no puede ser negativo."
+          }
+        },
+        {
+          "name": "Obtener libro - no existe (404)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/99999",
+            "description": "Debe devolver 404: libro no encontrado."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Búsqueda",
+      "item": [
+        {
+          "name": "Buscar por título",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/search?title=coronel",
+            "description": "Busca libros cuyo título contenga 'coronel' (case insensitive)."
+          }
+        },
+        {
+          "name": "Buscar por autor",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/search?author=García",
+            "description": "Busca libros cuyo autor contenga 'García'."
+          }
+        },
+        {
+          "name": "Buscar por categoría",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/search?category=Realismo",
+            "description": "Busca por categoría (parcial)."
+          }
+        },
+        {
+          "name": "Buscar visibles u ocultos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/search?isVisible=false",
+            "description": "Lista libros ocultos (isVisible=false)."
+          }
+        },
+        {
+          "name": "Buscar por varios filtros",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/search?title=soledad&author=García&isVisible=true",
+            "description": "Combina título, autor y visibilidad."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Via Gateway",
+      "item": [
+        {
+          "name": "Listar libros (por Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gatewayUrl}}/api/v1/books",
+            "description": "Misma operación pasando por el Gateway (servicio 'search' en Eureka)."
+          }
+        },
+        {
+          "name": "Obtener libro por ID (por Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gatewayUrl}}/api/v1/books/1",
+            "description": "GET por id vía Gateway."
+          }
+        }
+      ]
+    }
+  ]
+}
