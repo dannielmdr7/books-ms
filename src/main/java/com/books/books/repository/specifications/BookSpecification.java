@@ -12,6 +12,7 @@ import java.util.List;
 public class BookSpecification {
 
     public static Specification<Book> withFilters(
+            String q,
             String title,
             String author,
             LocalDate publicationDate,
@@ -22,6 +23,15 @@ public class BookSpecification {
 
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
+
+            if (q != null && !q.trim().isEmpty()) {
+                String like = "%" + q.trim().toLowerCase() + "%";
+                predicates.add(criteriaBuilder.or(
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), like),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("author")), like),
+                        criteriaBuilder.like(criteriaBuilder.lower(root.get("description")), like)
+                ));
+            }
 
             if (title != null && !title.trim().isEmpty()) {
                 predicates.add(criteriaBuilder.like(
@@ -76,7 +86,7 @@ public class BookSpecification {
                         true
                 ));
             }
-            
+
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
         };
     }

@@ -14,6 +14,6 @@ public interface IBookService {
 
     void deleteById(Long id);
 
-    List<Book> searchBooks(String title, String author, LocalDate publicationDate,
+    List<Book> searchBooks(String q, String title, String author, LocalDate publicationDate,
                            String category, Long isbn, Integer valoration, Boolean isVisible);
 }

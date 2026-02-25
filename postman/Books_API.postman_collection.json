@@ -48,10 +48,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"author\": \"Gabriel García Márquez\",\n  \"publicationDate\": \"1967-05-30\",\n  \"category\": \"Realismo Mágico\",\n  \"isbn\": 9780307474728,\n  \"valoration\": 5,\n  \"isVisible\": true,\n  \"currentStock\": 10\n}"
+              "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"author\": \"Gabriel García Márquez\",\n  \"publicationDate\": \"1967-05-30\",\n  \"category\": \"Realismo Mágico\",\n  \"isbn\": 9780307474728,\n  \"valoration\": 5,\n  \"isVisible\": true,\n  \"currentStock\": 10,\n  \"price\": 52.20,\n  \"imageUrl\": \"https://covers.openlibrary.org/b/isbn/9780307474728-L.jpg\",\n  \"description\": \"Una de las obras más importantes de la literatura latinoamericana que narra la historia de la familia Buendía a lo largo de siete generaciones en el pueblo ficticio de Macondo.\",\n  \"editorial\": \"Editorial Sudamericana\",\n  \"language\": \"Español\",\n  \"pages\": 471,\n  \"edition\": 1,\n  \"biography\": \"Gabriel García Márquez (1927-2014) fue un escritor colombiano, Premio Nobel de Literatura en 1982. Es el máximo exponente del realismo mágico.\",\n  \"authorPhotoUrl\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Gabriel_Garcia_Marquez.jpg/220px-Gabriel_Garcia_Marquez.jpg\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/books",
-            "description": "Crea un libro. Todos los campos son obligatorios. Esperado: 201 y body con el libro creado (incluye id)."
+            "description": "Crea un libro con todos los campos. Esperado: 201 y body con el libro creado (incluye id)."
           }
         },
         {
@@ -66,10 +66,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"author\": \"Gabriel García Márquez\",\n  \"publicationDate\": \"1967-05-30\",\n  \"category\": \"Realismo Mágico\",\n  \"isbn\": 9780307474728,\n  \"valoration\": 5,\n  \"isVisible\": true,\n  \"currentStock\": 8\n}"
+              "raw": "{\n  \"title\": \"Cien años de soledad\",\n  \"author\": \"Gabriel García Márquez\",\n  \"publicationDate\": \"1967-05-30\",\n  \"category\": \"Realismo Mágico\",\n  \"isbn\": 9780307474728,\n  \"valoration\": 5,\n  \"isVisible\": true,\n  \"currentStock\": 8,\n  \"price\": 52.20,\n  \"imageUrl\": \"https://covers.openlibrary.org/b/isbn/9780307474728-L.jpg\",\n  \"description\": \"Una de las obras más importantes de la literatura latinoamericana.\",\n  \"editorial\": \"Editorial Sudamericana\",\n  \"language\": \"Español\",\n  \"pages\": 471,\n  \"edition\": 1,\n  \"biography\": \"Gabriel García Márquez (1927-2014) fue un escritor colombiano, Premio Nobel 1982.\",\n  \"authorPhotoUrl\": \"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Gabriel_Garcia_Marquez.jpg/220px-Gabriel_Garcia_Marquez.jpg\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/books/1",
-            "description": "Actualiza el libro con id 1 (ejemplo: reducir currentStock). Esperado: 200."
+            "description": "Actualiza el libro con id 1. Esperado: 200."
           }
         },
         {
@@ -98,10 +98,10 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"publicationDate\": \"2020-01-01\",\n  \"category\": \"\",\n  \"isbn\": 123,\n  \"valoration\": 3,\n  \"isVisible\": true,\n  \"currentStock\": 0\n}"
+              "raw": "{\n  \"title\": \"\",\n  \"author\": \"\",\n  \"publicationDate\": \"2020-01-01\",\n  \"category\": \"\",\n  \"isbn\": 123,\n  \"valoration\": 3,\n  \"isVisible\": true,\n  \"currentStock\": 0,\n  \"price\": 10.00,\n  \"description\": \"\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/books",
-            "description": "Debe devolver 400: errores de validación (título, autor, categoría obligatorios)."
+            "description": "Debe devolver 400: errores de validación (título, autor, categoría, descripción obligatorios)."
           }
         },
         {
@@ -116,7 +116,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Libro Test\",\n  \"author\": \"Autor\",\n  \"publicationDate\": \"2020-01-01\",\n  \"category\": \"Ficción\",\n  \"isbn\": 1234567890,\n  \"valoration\": 3,\n  \"isVisible\": true,\n  \"currentStock\": -1\n}"
+              "raw": "{\n  \"title\": \"Libro Test\",\n  \"author\": \"Autor\",\n  \"publicationDate\": \"2020-01-01\",\n  \"category\": \"Ficción\",\n  \"isbn\": 1234567890,\n  \"valoration\": 3,\n  \"isVisible\": true,\n  \"currentStock\": -1,\n  \"price\": 10.00,\n  \"description\": \"Descripción de prueba\"\n}"
             },
             "url": "{{baseUrl}}/api/v1/books",
             "description": "Debe devolver 400: currentStock no puede ser negativo."
@@ -136,6 +136,15 @@
     {
       "name": "Búsqueda",
       "item": [
+        {
+          "name": "Búsqueda global ?q= (título, autor o descripción)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/books/search?q=orwell",
+            "description": "Búsqueda global por título, autor o descripción (nuevo parámetro). Case insensitive."
+          }
+        },
         {
           "name": "Buscar por título",
           "request": {
@@ -177,8 +186,40 @@
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{baseUrl}}/api/v1/books/search?title=soledad&author=García&isVisible=true",
-            "description": "Combina título, autor y visibilidad."
+            "url": "{{baseUrl}}/api/v1/books/search?q=magia&isVisible=true",
+            "description": "Combina búsqueda global y visibilidad."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categorías",
+      "item": [
+        {
+          "name": "Listar todas las categorías",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/categories",
+            "description": "Devuelve todas las categorías disponibles. Esperado: 200 y array."
+          }
+        },
+        {
+          "name": "Obtener categoría por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/categories/1",
+            "description": "Devuelve la categoría con id 1."
+          }
+        },
+        {
+          "name": "Obtener categoría por slug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/v1/categories/slug/ficcion",
+            "description": "Devuelve la categoría con slug 'ficcion'."
           }
         }
       ]
@@ -196,12 +237,21 @@
           }
         },
         {
-          "name": "Obtener libro por ID (por Gateway)",
+          "name": "Búsqueda global (por Gateway)",
           "request": {
             "method": "GET",
             "header": [],
-            "url": "{{gatewayUrl}}/api/v1/books/1",
-            "description": "GET por id vía Gateway."
+            "url": "{{gatewayUrl}}/api/v1/books/search?q=orwell",
+            "description": "Búsqueda global vía Gateway."
+          }
+        },
+        {
+          "name": "Listar categorías (por Gateway)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{gatewayUrl}}/api/v1/categories",
+            "description": "Categorías vía Gateway."
           }
         }
       ]

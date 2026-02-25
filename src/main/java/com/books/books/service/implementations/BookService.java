@@ -21,7 +21,7 @@ public class BookService implements IBookService {
     @Override
     public List<Book> findAll() {
         Specification<Book> spec = BookSpecification.withFilters(
-                null, null, null, null, null, null, true
+                null, null, null, null, null, null, null, true
         );
         return bookRepository.findAll(spec);
     }
@@ -44,10 +44,10 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<Book> searchBooks(String title, String author, LocalDate publicationDate,
+    public List<Book> searchBooks(String q, String title, String author, LocalDate publicationDate,
                                   String category, Long isbn, Integer valoration, Boolean isVisible) {
         Specification<Book> spec = BookSpecification.withFilters(
-                title, author, publicationDate, category, isbn, valoration, isVisible
+                q, title, author, publicationDate, category, isbn, valoration, isVisible
         );
         return bookRepository.findAll(spec);
     }

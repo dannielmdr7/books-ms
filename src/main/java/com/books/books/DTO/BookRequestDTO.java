@@ -34,4 +34,25 @@ public class BookRequestDTO {
     @PositiveOrZero(message = "El stock no puede ser negativo")
     @NotNull
     Integer currentStock;
+
+    @NotNull(message = "El precio es obligatorio")
+    @Positive(message = "El precio debe ser mayor a 0")
+    Double price;
+
+    String imageUrl;
+
+    @NotBlank(message = "La descripción es obligatoria")
+    String description;
+
+    String editorial;
+    String language;
+
+    @Positive(message = "El número de páginas debe ser mayor a 0")
+    Integer pages;
+
+    @Positive(message = "El número de edición debe ser mayor a 0")
+    Integer edition;
+
+    String biography;
+    String authorPhotoUrl;
 }

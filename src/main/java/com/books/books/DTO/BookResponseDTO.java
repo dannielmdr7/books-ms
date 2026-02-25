@@ -1,6 +1,5 @@
 package com.books.books.DTO;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -16,4 +15,13 @@ public class BookResponseDTO {
     Integer valoration;
     Boolean isVisible;
     Integer currentStock;
+    Double price;
+    String imageUrl;
+    String description;
+    String editorial;
+    String language;
+    Integer pages;
+    Integer edition;
+    String biography;
+    String authorPhotoUrl;
 }

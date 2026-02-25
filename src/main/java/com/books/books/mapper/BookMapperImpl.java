@@ -26,6 +26,15 @@ public class BookMapperImpl implements BookMapper {
         book.setValoration(bookRequestDTO.getValoration());
         book.setIsVisible(bookRequestDTO.getIsVisible());
         book.setCurrentStock(bookRequestDTO.getCurrentStock());
+        book.setPrice(bookRequestDTO.getPrice());
+        book.setImageUrl(bookRequestDTO.getImageUrl());
+        book.setDescription(bookRequestDTO.getDescription());
+        book.setEditorial(bookRequestDTO.getEditorial());
+        book.setLanguage(bookRequestDTO.getLanguage());
+        book.setPages(bookRequestDTO.getPages());
+        book.setEdition(bookRequestDTO.getEdition());
+        book.setBiography(bookRequestDTO.getBiography());
+        book.setAuthorPhotoUrl(bookRequestDTO.getAuthorPhotoUrl());
 
         return book;
     }
@@ -46,6 +55,15 @@ public class BookMapperImpl implements BookMapper {
         bookResponseDTO.setValoration(book.getValoration());
         bookResponseDTO.setIsVisible(book.getIsVisible());
         bookResponseDTO.setCurrentStock(book.getCurrentStock());
+        bookResponseDTO.setPrice(book.getPrice());
+        bookResponseDTO.setImageUrl(book.getImageUrl());
+        bookResponseDTO.setDescription(book.getDescription());
+        bookResponseDTO.setEditorial(book.getEditorial());
+        bookResponseDTO.setLanguage(book.getLanguage());
+        bookResponseDTO.setPages(book.getPages());
+        bookResponseDTO.setEdition(book.getEdition());
+        bookResponseDTO.setBiography(book.getBiography());
+        bookResponseDTO.setAuthorPhotoUrl(book.getAuthorPhotoUrl());
 
         return bookResponseDTO;
     }
@@ -75,6 +93,15 @@ public class BookMapperImpl implements BookMapper {
         book.setValoration(bookRequestDTO.getValoration());
         book.setIsVisible(bookRequestDTO.getIsVisible());
         book.setCurrentStock(bookRequestDTO.getCurrentStock());
+        book.setPrice(bookRequestDTO.getPrice());
+        book.setImageUrl(bookRequestDTO.getImageUrl());
+        book.setDescription(bookRequestDTO.getDescription());
+        book.setEditorial(bookRequestDTO.getEditorial());
+        book.setLanguage(bookRequestDTO.getLanguage());
+        book.setPages(bookRequestDTO.getPages());
+        book.setEdition(bookRequestDTO.getEdition());
+        book.setBiography(bookRequestDTO.getBiography());
+        book.setAuthorPhotoUrl(bookRequestDTO.getAuthorPhotoUrl());
     }
 }
 

@@ -36,6 +36,23 @@ public class BookController {
         return new ResponseEntity<>(bookResponseDTO, HttpStatus.CREATED);
     }
 
+    @GetMapping("/search")
+    public List<BookResponseDTO> searchBooks(
+            @RequestParam(required = false) String q,
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate publicationDate,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) Long isbn,
+            @RequestParam(required = false) Integer valoration,
+            @RequestParam(required = false) Boolean isVisible) {
+
+        List<Book> books = bookService.searchBooks(
+                q, title, author, publicationDate, category, isbn, valoration, isVisible
+        );
+        return bookMapper.toBookResponseDTOList(books);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
         Book book = bookService.findById(id);
@@ -55,22 +72,6 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search")
-    public List<BookResponseDTO> searchBooks(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String author,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate publicationDate,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) Long isbn,
-            @RequestParam(required = false) Integer valoration,
-            @RequestParam(required = false) Boolean isVisible) {
-
-        List<Book> books = bookService.searchBooks(
-                title, author, publicationDate, category, isbn, valoration, isVisible
-        );
-        return bookMapper.toBookResponseDTOList(books);
     }
 
 }
