@@ -1,0 +1,20 @@
+# start with docker compose up -d
+version: '3.8'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: postgres_books
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: books
+    ports:
+      - "5432:5432"
+    volumes:
+      # Cambiamos /var/lib/postgresql/data por /var/lib/postgresql
+      # Esto permite que Postgres cree sus subdirectorios internos (pg_data) sin conflictos
+      - postgres_data:/var/lib/postgresql
+
+volumes:
+  postgres_data:
