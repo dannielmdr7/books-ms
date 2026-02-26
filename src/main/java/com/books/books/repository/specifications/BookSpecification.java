@@ -19,7 +19,9 @@ public class BookSpecification {
             String category,
             Long isbn,
             Integer valoration,
-            Boolean isVisible) {
+            Boolean isVisible,
+            Double priceMin,
+            Double priceMax) {
 
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -85,6 +87,13 @@ public class BookSpecification {
                         root.get("isVisible"),
                         true
                 ));
+            }
+
+            if (priceMin != null) {
+                predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), priceMin));
+            }
+            if (priceMax != null) {
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("price"), priceMax));
             }
 
             return criteriaBuilder.and(predicates.toArray(new Predicate[0]));

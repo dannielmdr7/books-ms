@@ -2,6 +2,7 @@ package com.books.books.controller;
 
 import com.books.books.DTO.BookRequestDTO;
 import com.books.books.DTO.BookResponseDTO;
+import com.books.books.DTO.BookSearchResponse;
 import com.books.books.domain.Book;
 import com.books.books.mapper.BookMapper;
 import com.books.books.service.interfaces.IBookService;
@@ -37,7 +38,7 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<BookResponseDTO> searchBooks(
+    public BookSearchResponse searchBooks(
             @RequestParam(required = false) String q,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String author,
@@ -45,10 +46,14 @@ public class BookController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) Long isbn,
             @RequestParam(required = false) Integer valoration,
-            @RequestParam(required = false) Boolean isVisible) {
+            @RequestParam(required = false) Boolean isVisible,
+            @RequestParam(required = false) Double priceMin,
+            @RequestParam(required = false) Double priceMax,
+            @RequestParam(required = false, defaultValue = "true") Boolean aggregate) {
 
         return bookService.searchBooks(
-                q, title, author, publicationDate, category, isbn, valoration, isVisible
+                q, title, author, publicationDate, category, isbn, valoration, isVisible,
+                priceMin, priceMax, aggregate
         );
     }
 

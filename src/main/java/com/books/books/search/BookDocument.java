@@ -9,6 +9,8 @@ import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.InnerField;
+import org.springframework.data.elasticsearch.annotations.MultiField;
 
 import java.time.LocalDate;
 
@@ -28,13 +30,19 @@ public class BookDocument {
     @Field(type = FieldType.Text, name = "title")
     private String title;
 
-    @Field(type = FieldType.Text, name = "author")
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, name = "author"),
+            otherFields = @InnerField(suffix = "keyword", type = FieldType.Keyword)
+    )
     private String author;
 
     @Field(type = FieldType.Date, name = "publicationDate", format = DateFormat.date)
     private LocalDate publicationDate;
 
-    @Field(type = FieldType.Text, name = "category")
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, name = "category"),
+            otherFields = @InnerField(suffix = "keyword", type = FieldType.Keyword)
+    )
     private String category;
 
     @Field(type = FieldType.Long, name = "isbn")

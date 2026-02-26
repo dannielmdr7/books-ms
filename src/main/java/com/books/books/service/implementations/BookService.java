@@ -1,6 +1,6 @@
 package com.books.books.service.implementations;
 
-import com.books.books.DTO.BookResponseDTO;
+import com.books.books.DTO.BookSearchResponse;
 import com.books.books.domain.Book;
 import com.books.books.event.BookDeletedEvent;
 import com.books.books.event.BookSavedEvent;
@@ -8,7 +8,6 @@ import com.books.books.exception.ResourceNotFoundException;
 import com.books.books.mapper.BookMapper;
 import com.books.books.repository.BookRepository;
 import com.books.books.repository.specifications.BookSpecification;
-import com.books.books.search.BookDocument;
 import com.books.books.search.BookSearchDataAccess;
 import com.books.books.service.interfaces.IBookService;
 import lombok.RequiredArgsConstructor;
@@ -18,8 +17,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service()
 @RequiredArgsConstructor()
@@ -35,7 +35,7 @@ public class BookService implements IBookService {
     @Override
     public List<Book> findAll() {
         Specification<Book> spec = BookSpecification.withFilters(
-                null, null, null, null, null, null, null, true
+                null, null, null, null, null, null, null, true, null, null
         );
         return bookRepository.findAll(spec);
     }
@@ -61,21 +61,23 @@ public class BookService implements IBookService {
     }
 
     @Override
-    public List<BookResponseDTO> searchBooks(String q, String title, String author, LocalDate publicationDate,
-                                              String category, Long isbn, Integer valoration, Boolean isVisible) {
+    public BookSearchResponse searchBooks(String q, String title, String author, LocalDate publicationDate,
+                                          String category, Long isbn, Integer valoration, Boolean isVisible,
+                                          Double priceMin, Double priceMax, Boolean aggregate) {
         if (bookSearchDataAccess != null) {
-            List<BookDocument> docs = bookSearchDataAccess.searchBooks(
-                    q, title, author, publicationDate, category, isbn, valoration, isVisible
+            return bookSearchDataAccess.searchBooks(
+                    q, title, author, publicationDate, category, isbn, valoration, isVisible,
+                    priceMin, priceMax, aggregate != null ? aggregate : true
             );
-            return docs.stream()
-                    .map(bookMapper::toResponseDTO)
-                    .collect(Collectors.toList());
         }
         Specification<Book> spec = BookSpecification.withFilters(
-                q, title, author, publicationDate, category, isbn, valoration, isVisible
+                q, title, author, publicationDate, category, isbn, valoration, isVisible, priceMin, priceMax
         );
         List<Book> books = bookRepository.findAll(spec);
-        return bookMapper.toBookResponseDTOList(books);
+        return new BookSearchResponse(
+                bookMapper.toBookResponseDTOList(books),
+                new HashMap<>()
+        );
     }
 
 
