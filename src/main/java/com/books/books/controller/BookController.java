@@ -54,11 +54,13 @@ public class BookController {
             @RequestParam(required = false) Boolean isVisible,
             @RequestParam(required = false) Double priceMin,
             @RequestParam(required = false) Double priceMax,
-            @RequestParam(required = false, defaultValue = "true") Boolean aggregate) {
+            @RequestParam(required = false, defaultValue = "true") Boolean aggregate,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "20") int size) {
 
         return bookService.searchBooks(
                 q, title, author, publicationDate, category, isbn, valoration, isVisible,
-                priceMin, priceMax, aggregate
+                priceMin, priceMax, aggregate, page, size
         );
     }
 

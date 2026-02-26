@@ -90,7 +90,7 @@ public class BookSearchDataAccess {
 
     public BookSearchResponse searchBooks(String q, String title, String author, LocalDate publicationDate,
                                           String category, Long isbn, Integer valoration, Boolean isVisible,
-                                          Double priceMin, Double priceMax, Boolean aggregate) {
+                                          Double priceMin, Double priceMax, Boolean aggregate, int page, int size) {
 
         BoolQueryBuilder querySpec = QueryBuilders.boolQuery();
 
@@ -154,6 +154,8 @@ public class BookSearchDataAccess {
             );
         }
 
+        builder.withPageable(PageRequest.of(page, size));
+
         Query query = builder.build();
         SearchHits<BookDocument> result = elasticsearchOperations.search(query, BookDocument.class);
 
@@ -166,9 +168,14 @@ public class BookSearchDataAccess {
             aggregations = parseAggregations(result, q, title, author, publicationDate, category, isbn, valoration, isVisible, priceMin, priceMax);
         }
 
+        long totalElements = result.getTotalHits();
+        int totalPages = size > 0 ? (int) Math.ceil((double) totalElements / size) : 0;
+
         return new BookSearchResponse(
                 books.stream().map(bookMapper::toResponseDTO).collect(Collectors.toList()),
-                aggregations
+                aggregations,
+                totalElements,
+                totalPages
         );
     }
 

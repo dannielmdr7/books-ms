@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
+
 @Service()
 @RequiredArgsConstructor()
 public class BookService implements IBookService {
@@ -63,20 +65,23 @@ public class BookService implements IBookService {
     @Override
     public BookSearchResponse searchBooks(String q, String title, String author, LocalDate publicationDate,
                                           String category, Long isbn, Integer valoration, Boolean isVisible,
-                                          Double priceMin, Double priceMax, Boolean aggregate) {
+                                          Double priceMin, Double priceMax, Boolean aggregate, int page, int size) {
         if (bookSearchDataAccess != null) {
             return bookSearchDataAccess.searchBooks(
                     q, title, author, publicationDate, category, isbn, valoration, isVisible,
-                    priceMin, priceMax, aggregate != null ? aggregate : true
+                    priceMin, priceMax, aggregate != null ? aggregate : true, page, size
             );
         }
         Specification<Book> spec = BookSpecification.withFilters(
                 q, title, author, publicationDate, category, isbn, valoration, isVisible, priceMin, priceMax
         );
-        List<Book> books = bookRepository.findAll(spec);
+        var pageRequest = PageRequest.of(page, size);
+        var result = bookRepository.findAll(spec, pageRequest);
         return new BookSearchResponse(
-                bookMapper.toBookResponseDTOList(books),
-                new HashMap<>()
+                bookMapper.toBookResponseDTOList(result.getContent()),
+                new HashMap<>(),
+                result.getTotalElements(),
+                result.getTotalPages()
         );
     }
 

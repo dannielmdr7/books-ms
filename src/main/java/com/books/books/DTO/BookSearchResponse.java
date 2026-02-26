@@ -16,4 +16,6 @@ public class BookSearchResponse {
 
     private List<BookResponseDTO> books;
     private Map<String, List<AggregationDetails>> aggregations;
+    private long totalElements;
+    private int totalPages;
 }
