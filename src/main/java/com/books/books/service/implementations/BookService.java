@@ -80,5 +80,11 @@ public class BookService implements IBookService {
         );
     }
 
-
+    @Override
+    public List<String> getSuggestions(String q, int limit) {
+        if (bookSearchDataAccess != null) {
+            return bookSearchDataAccess.getSuggestions(q != null ? q.trim() : "", limit);
+        }
+        return Collections.emptyList();
+    }
 }

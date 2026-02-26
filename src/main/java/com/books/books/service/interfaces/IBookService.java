@@ -18,4 +18,6 @@ public interface IBookService {
     BookSearchResponse searchBooks(String q, String title, String author, LocalDate publicationDate,
                                    String category, Long isbn, Integer valoration, Boolean isVisible,
                                    Double priceMin, Double priceMax, Boolean aggregate);
+
+    List<String> getSuggestions(String q, int limit);
 }

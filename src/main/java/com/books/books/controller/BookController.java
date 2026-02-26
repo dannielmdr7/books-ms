@@ -37,6 +37,11 @@ public class BookController {
         return new ResponseEntity<>(bookResponseDTO, HttpStatus.CREATED);
     }
 
+    @GetMapping("/suggest")
+    public List<String> suggest(@RequestParam(value = "q", required = false) String q) {
+        return bookService.getSuggestions(q != null ? q.trim() : "", 10);
+    }
+
     @GetMapping("/search")
     public BookSearchResponse searchBooks(
             @RequestParam(required = false) String q,

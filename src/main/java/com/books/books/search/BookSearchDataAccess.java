@@ -5,6 +5,7 @@ import com.books.books.DTO.BookSearchResponse;
 import com.books.books.mapper.BookMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.opensearch.common.unit.Fuzziness;
 import org.opensearch.index.query.BoolQueryBuilder;
 import org.opensearch.index.query.MultiMatchQueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
@@ -19,6 +20,7 @@ import org.springframework.data.elasticsearch.core.SearchHit;
 import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.data.elasticsearch.core.query.Query;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -46,8 +48,44 @@ public class BookSearchDataAccess {
         bookSearchRepository.save(document);
     }
 
+    public void saveAll(Iterable<BookDocument> documents) {
+        bookSearchRepository.saveAll(documents);
+    }
+
     public void deleteById(String id) {
         bookSearchRepository.deleteById(id);
+    }
+
+    public List<String> getSuggestions(String q, int limit) {
+        if (!StringUtils.hasText(q) || q.length() < 2) {
+            return List.of();
+        }
+        BoolQueryBuilder querySpec = QueryBuilders.boolQuery()
+                .must(QueryBuilders.multiMatchQuery(q, "title", "author")
+                        .type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
+                        .fuzziness(Fuzziness.AUTO)
+                        .prefixLength(1))
+                .must(QueryBuilders.termQuery("isVisible", true));
+
+        NativeSearchQueryBuilder builder = new NativeSearchQueryBuilder()
+                .withQuery(querySpec)
+                .withPageable(PageRequest.of(0, limit * 2));
+
+        Query query = builder.build();
+        SearchHits<BookDocument> result = elasticsearchOperations.search(query, BookDocument.class);
+
+        Set<String> suggestions = new LinkedHashSet<>();
+        for (SearchHit<BookDocument> hit : result.getSearchHits()) {
+            BookDocument doc = hit.getContent();
+            if (doc.getTitle() != null && !doc.getTitle().isBlank()) {
+                suggestions.add(doc.getTitle());
+            }
+            if (doc.getAuthor() != null && !doc.getAuthor().isBlank()) {
+                suggestions.add(doc.getAuthor());
+            }
+            if (suggestions.size() >= limit) break;
+        }
+        return new ArrayList<>(suggestions).stream().limit(limit).toList();
     }
 
     public BookSearchResponse searchBooks(String q, String title, String author, LocalDate publicationDate,
@@ -58,7 +96,10 @@ public class BookSearchDataAccess {
 
         if (StringUtils.hasText(q)) {
             querySpec.must(QueryBuilders.multiMatchQuery(q, SEARCH_FIELDS)
-                    .type(MultiMatchQueryBuilder.Type.BEST_FIELDS));
+                    .type(MultiMatchQueryBuilder.Type.BEST_FIELDS)
+                    .fuzziness(Fuzziness.AUTO)
+                    .prefixLength(1)
+                    .maxExpansions(50));
         }
 
         if (StringUtils.hasText(title)) {

@@ -7,11 +7,12 @@ import com.books.books.repository.BookRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -22,15 +23,26 @@ public class BookOpenSearchSync {
     private final BookRepository bookRepository;
     private final BookSearchDataAccess bookSearchDataAccess;
 
+    private static final int BATCH_SIZE = 200;
+
     @PostConstruct
     public void syncAllOnStartup() {
         try {
-            List<Book> allBooks = bookRepository.findAll();
-            List<BookDocument> documents = allBooks.stream()
-                    .map(this::toDocument)
-                    .collect(Collectors.toList());
-            documents.forEach(bookSearchDataAccess::save);
-            log.info("OpenSearch: sincronizados {} libros en el índice", documents.size());
+            int total = 0;
+            Page<Book> page;
+            int pageNum = 0;
+            do {
+                page = bookRepository.findAll(PageRequest.of(pageNum++, BATCH_SIZE));
+                List<BookDocument> documents = page.getContent().stream()
+                        .map(this::toDocument)
+                        .toList();
+                if (!documents.isEmpty()) {
+                    bookSearchDataAccess.saveAll(documents);
+                    total += documents.size();
+                    log.debug("OpenSearch: indexados {} libros (lote {})", documents.size(), pageNum);
+                }
+            } while (page.hasNext());
+            log.info("OpenSearch: sincronizados {} libros en el índice", total);
         } catch (Exception e) {
             log.warn("OpenSearch: no se pudo sincronizar el índice en el arranque: {}", e.getMessage());
         }
