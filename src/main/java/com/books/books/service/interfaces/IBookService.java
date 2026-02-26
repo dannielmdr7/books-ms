@@ -1,5 +1,6 @@
 package com.books.books.service.interfaces;
 
+import com.books.books.DTO.BookResponseDTO;
 import com.books.books.domain.Book;
 
 import java.time.LocalDate;
@@ -14,6 +15,6 @@ public interface IBookService {
 
     void deleteById(Long id);
 
-    List<Book> searchBooks(String q, String title, String author, LocalDate publicationDate,
-                           String category, Long isbn, Integer valoration, Boolean isVisible);
+    List<BookResponseDTO> searchBooks(String q, String title, String author, LocalDate publicationDate,
+                                      String category, Long isbn, Integer valoration, Boolean isVisible);
 }

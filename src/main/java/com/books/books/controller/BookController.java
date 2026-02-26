@@ -47,10 +47,9 @@ public class BookController {
             @RequestParam(required = false) Integer valoration,
             @RequestParam(required = false) Boolean isVisible) {
 
-        List<Book> books = bookService.searchBooks(
+        return bookService.searchBooks(
                 q, title, author, publicationDate, category, isbn, valoration, isVisible
         );
-        return bookMapper.toBookResponseDTOList(books);
     }
 
     @GetMapping("/{id}")

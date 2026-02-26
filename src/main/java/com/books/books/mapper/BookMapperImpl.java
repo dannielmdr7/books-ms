@@ -3,6 +3,7 @@ package com.books.books.mapper;
 import com.books.books.DTO.BookRequestDTO;
 import com.books.books.DTO.BookResponseDTO;
 import com.books.books.domain.Book;
+import com.books.books.search.BookDocument;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -66,6 +67,33 @@ public class BookMapperImpl implements BookMapper {
         bookResponseDTO.setAuthorPhotoUrl(book.getAuthorPhotoUrl());
 
         return bookResponseDTO;
+    }
+
+    @Override
+    public BookResponseDTO toResponseDTO(BookDocument document) {
+        if (document == null) {
+            return null;
+        }
+        BookResponseDTO dto = new BookResponseDTO();
+        dto.setId(document.getBookId());
+        dto.setTitle(document.getTitle());
+        dto.setAuthor(document.getAuthor());
+        dto.setPublicationDate(document.getPublicationDate());
+        dto.setCategory(document.getCategory());
+        dto.setIsbn(document.getIsbn());
+        dto.setValoration(document.getValoration());
+        dto.setIsVisible(document.getIsVisible());
+        dto.setCurrentStock(document.getCurrentStock());
+        dto.setPrice(document.getPrice());
+        dto.setImageUrl(document.getImageUrl());
+        dto.setDescription(document.getDescription());
+        dto.setEditorial(document.getEditorial());
+        dto.setLanguage(document.getLanguage());
+        dto.setPages(document.getPages());
+        dto.setEdition(document.getEdition());
+        dto.setBiography(document.getBiography());
+        dto.setAuthorPhotoUrl(document.getAuthorPhotoUrl());
+        return dto;
     }
 
     @Override
